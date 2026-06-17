@@ -72,7 +72,7 @@ use CodeIgniter\Database\Seeder;
 class ClientSeeder extends Seeder
 {
     public function run()
-    {
+    { 
         $data = [
             [
                 'nom' => 'Jean',

@@ -17,6 +17,9 @@ $Produits = $listeProduits ?? [];
         <div class="container-fluid d-flex justify-content-between">
             <span class="navbar-brand mb-0 h1"> Supermarché SI-IHM</span>
             <span class="badge bg-success fs-5">Caisse active : N° <?= session()->get('id_caisse') ?? 'Non définie' ?></span>
+            <span class="navbar-text">
+                <a href="<?= base_url('logout') ?>" class="btn btn-outline-light btn-sm">Déconnexion</a>
+            </span>
         </div>
     </nav>
 
@@ -34,7 +37,7 @@ $Produits = $listeProduits ?? [];
                 <div class="card shadow-sm p-4 mb-4">
                     <h4 class="mb-3">Saisie des achats</h4>
 
-                    <form action="achat/ajouter" method="POST" class="row g-3 align-items-end">
+                    <form action="<?= base_url('client/achat/ajouter') ?>" method="POST" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="produit" class="form-label fw-bold">Produit</label>
                             <select class="form-select" id="produit" name="id_produit" required>
@@ -51,7 +54,7 @@ $Produits = $listeProduits ?? [];
                         </div>
 
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100" onclick="envoyerFormulaire(event)">Valider</button>
+                            <button type="submit" class="btn btn-primary w-100" onclick="envoyerFormulaire(event)">Ajouter produit</button>
                         </div>
                     </form>
                 </div>
@@ -59,8 +62,8 @@ $Produits = $listeProduits ?? [];
                 <div class="card shadow-sm p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="m-0">Produits du Client</h4>
-                        <a href="achat/cloturer" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)">
-                            <<< Clôturer achat >>>
+                        <a href="<?= base_url('client/achat/cloturer') ?>" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)">
+                            <<< Clôturer achat>>>
                         </a>
                     </div>
 
