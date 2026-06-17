@@ -1,3 +1,7 @@
+<?php $caisse = $caisses ?? []; ?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,14 +16,15 @@
         <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
             <h3 class="card-title text-center mb-4">Caisse d'un supermarché</h3>
             
-            <form action="<?= base_url('caisse/valider') ?>" method="POST">
+            <form action="<?= base_url('caisse/choixCaisse') ?>" method="POST">
                 
                 <div class="mb-3">
                     <label for="caisse" class="form-label fw-bold">Choisir Caisse</label>
                     <select class="form-select form-select-lg" id="caisse" name="id_caisse" required>
                         <option value="" selected disabled>-- Sélectionner une caisse --</option>
-                        <option value="1">Caisse N° 1</option>
-                        <option value="2">Caisse N° 2</option>
+                        <?php foreach ($caisse as $c): ?>
+                            <option value="<?= $c['id'] ?>"><?= $c['numero_caisse'] ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
