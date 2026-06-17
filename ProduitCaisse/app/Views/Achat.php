@@ -1,3 +1,6 @@
+<?php
+    $Produits = $listeProduits ?? [];
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -27,8 +30,9 @@
                             <label for="produit" class="form-label fw-bold">Produit</label>
                             <select class="form-select" id="produit" name="id_produit" required>
                                 <option value="" selected disabled>Choisir un produit...</option>
-                                <option value="1">Biscuit (1000 MGA)</option>
-                                <option value="2">Pain (400 MGA)</option>
+                                <?php foreach ($Produits as $produit): ?>
+                                    <option value="<?= $produit['id'] ?>"><?= $produit['designation'] ?> (<?= $produit['prix_unitaire'] ?> MGA)</option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         
@@ -38,7 +42,7 @@
                         </div>
                         
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">Valider</button>
+                            <button type="submit" class="btn btn-primary w-100" onclick="envoyerFormulaire(event)">Valider</button>
                         </div>
                     </form>
                 </div>
@@ -46,7 +50,7 @@
                 <div class="card shadow-sm p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="m-0">Panier du Client</h4>
-                        <a href="<?= base_url('achat/cloturer') ?>" class="btn btn-danger btn-sm"><<< Clôturer achat >>></a>
+                        <a href="<?= base_url('achat/cloturer') ?>" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)"><<< Clôturer achat >>></a>
                     </div>
 
                     <div class="table-responsive">
@@ -76,7 +80,7 @@
                             <tfoot>
                                 <tr class="table-dark">
                                     <td colspan="3" class="text-end fw-bold">Total</td>
-                                    <td class="text-end fw-bold fs-5">12800</td>
+                                    <td class="text-end fw-bold fs-5">0 MGA</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -89,3 +93,55 @@
 
 </body>
 </html>
+
+<script>
+    // Se déclenche automatiquement au chargement du document
+    document.addEventListener("DOMContentLoaded", function() {
+        updateTotal();
+    });
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            if(row.cells.length >= 4) {
+                // Extraction propre des chiffres uniquement
+                const text = row.cells[3].textContent.replace(/[^0-9]/g, "");
+                const montant = parseFloat(text) || 0;
+                total += montant;
+            }
+        });
+        document.querySelector('tfoot tr td:last-child').textContent = total.toLocaleString() + ' MGA';
+    }
+
+    function validationAchat() {
+        const quantiteInput = document.getElementById('quantite').value;
+        const quantite = parseInt(quantiteInput);
+        const produitSelect = document.getElementById('produit').value;
+
+        if (!produitSelect) {
+            alert('Veuillez sélectionner un produit.');
+            return false;
+        }
+        if (isNaN(quantite) || quantite <= 0) {
+            alert('La quantité doit être supérieure à zéro.');
+            return false;
+        }
+        return true;
+    }
+
+    function confirmerCloture() {
+        return confirm('Êtes-vous sûr de vouloir clôturer cet achat ?');
+    }
+
+    function envoyerFormulaire(event) {
+        if (!validationAchat()) {
+            event.preventDefault(); // Bloque la soumission du formulaire si invalide
+        }
+    }
+
+    function cloturerAchat(event) {
+        if (!confirmerCloture()) {
+            event.preventDefault(); // Bloque la redirection vers l'URL si "Annuler"
+        }
+    }
+</script>

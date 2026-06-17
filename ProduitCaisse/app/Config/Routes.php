@@ -6,3 +6,4 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/login', 'Home::login');
 $routes->post('/achat', 'Home::achat');
+$routes->get('/achat', 'Home::achat');
