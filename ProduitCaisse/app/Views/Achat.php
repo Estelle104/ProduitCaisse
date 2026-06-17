@@ -1,11 +1,16 @@
+<?php
+$Produits = $listeProduits ?? [];
+?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Achats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
 
     <nav class="navbar navbar-dark bg-dark mb-4">
@@ -18,35 +23,38 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                
+
                 <div class="card shadow-sm p-4 mb-4">
                     <h4 class="mb-3">Saisie des achats</h4>
-                    
+
                     <form action="<?= base_url('achat/ajouter') ?>" method="POST" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="produit" class="form-label fw-bold">Produit</label>
                             <select class="form-select" id="produit" name="id_produit" required>
                                 <option value="" selected disabled>Choisir un produit...</option>
-                                <option value="1">Biscuit (1000 MGA)</option>
-                                <option value="2">Pain (400 MGA)</option>
+                                <?php foreach ($Produits as $produit): ?>
+                                    <option value="<?= $produit['id'] ?>"><?= $produit['designation'] ?> (<?= $produit['prix_unitaire'] ?> MGA)</option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
-                        
+
                         <div class="col-md-3">
                             <label for="quantite" class="form-label fw-bold">Quantité</label>
                             <input type="number" class="form-control" id="quantite" name="quantite" min="1" value="1" required>
                         </div>
-                        
+
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">Valider</button>
+                            <button type="submit" class="btn btn-primary w-100" onclick="envoyerFormulaire(event)">Valider</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="card shadow-sm p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="m-0">Panier du Client</h4>
-                        <a href="<?= base_url('achat/cloturer') ?>" class="btn btn-danger btn-sm"><<< Clôturer achat >>></a>
+                        <h4 class="m-0">Produits du Client</h4>
+                        <a href="<?= base_url('achat/cloturer') ?>" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)">
+                            <<< Clôturer achat>>>
+                        </a>
                     </div>
 
                     <div class="table-responsive">
@@ -60,23 +68,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Biscuit</td>
-                                    <td class="text-end">1000</td>
-                                    <td class="text-center">12</td>
-                                    <td class="text-end fw-bold">12000</td>
-                                </tr>
-                                <tr>
-                                    <td>Pain</td>
-                                    <td class="text-end">400</td>
-                                    <td class="text-center">2</td>
-                                    <td class="text-end fw-bold">800</td>
-                                </tr>
+                                <?php if (!empty($panier)): ?>
+                                    <?php foreach ($panier as $ligne): ?>
+                                        <tr>
+                                            <td><?= esc($ligne['designation']) ?></td>
+                                            <td class="text-end"><?= number_format($ligne['prix_unitaire'], 0, ',', ' ') ?></td>
+                                            <td class="text-center"><?= $ligne['quantite'] ?></td>
+                                            <td class="text-end fw-bold"><?= $ligne['somme_produit'] ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Le panier est vide pour ce client.</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                             <tfoot>
                                 <tr class="table-dark">
                                     <td colspan="3" class="text-end fw-bold">Total</td>
-                                    <td class="text-end fw-bold fs-5">12800</td>
+                                    <td class="text-end fw-bold fs-5">0 MGA</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -88,4 +98,57 @@
     </div>
 
 </body>
+
 </html>
+
+<script>
+    // Se déclenche automatiquement au chargement du document
+    document.addEventListener("DOMContentLoaded", function() {
+        updateTotal();
+    });
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            if (row.cells.length >= 4) {
+                // Extraction propre des chiffres uniquement
+                const text = row.cells[3].textContent.replace(/[^0-9]/g, "");
+                const montant = parseFloat(text) || 0;
+                total += montant;
+            }
+        });
+        document.querySelector('tfoot tr td:last-child').textContent = total.toLocaleString() + ' MGA';
+    }
+
+    function validationAchat() {
+        const quantiteInput = document.getElementById('quantite').value;
+        const quantite = parseInt(quantiteInput);
+        const produitSelect = document.getElementById('produit').value;
+
+        if (!produitSelect) {
+            alert('Veuillez sélectionner un produit.');
+            return false;
+        }
+        if (isNaN(quantite) || quantite <= 0) {
+            alert('La quantité doit être supérieure à zéro.');
+            return false;
+        }
+        return true;
+    }
+
+    function confirmerCloture() {
+        return confirm('Êtes-vous sûr de vouloir clôturer cet achat ?');
+    }
+
+    function envoyerFormulaire(event) {
+        if (!validationAchat()) {
+            event.preventDefault(); // Bloque la soumission du formulaire si invalide
+        }
+    }
+
+    function cloturerAchat(event) {
+        if (!confirmerCloture()) {
+            event.preventDefault(); // Bloque la redirection vers l'URL si "Annuler"
+        }
+    }
+</script>
