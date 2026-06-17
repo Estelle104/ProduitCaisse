@@ -31,7 +31,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">Valider</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Choisir Caisse</button>
             </form>
 
         </div>

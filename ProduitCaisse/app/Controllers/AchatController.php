@@ -90,7 +90,7 @@ class AchatController extends BaseController
             // On supprime l'ID de l'achat de la session
             session()->remove('id_achat_en_cours');
 
-            return redirect()->to('/achat')->with('success', 'Achat clôturé avec succès ! Prêt pour le client suivant.');
+            return redirect()->to('/client/achat')->with('success', 'Achat clôturé avec succès ! Prêt pour le client suivant.');
         }
 
         return redirect()->back()->with('error', 'Aucun achat en cours à clôturer.');
