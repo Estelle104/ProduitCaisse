@@ -17,9 +17,9 @@ class AchatController extends BaseController
 
         // 2. Récupération des données du formulaire et de la session
         $idCaisse = session()->get('id_caisse');
-        $idClient = session()->get('client_id'); // Optionnel, si ton login est actif
+        $idClient = session()->get('client_id'); 
 
-        $idCaisse = 1;
+        // $idCaisse = 1;
         $idClient = 1;
 
         $idProduit = $this->request->getPost('id_produit');
