@@ -101,3 +101,7 @@ php spark migrate
 php spark db:seed ClientSeeder
 php spark db:seed ProduitSeeder
 php spark db:seed CaisseSeeder
+
+
+# Reinitialiser 
+php spark migrate:rollback
