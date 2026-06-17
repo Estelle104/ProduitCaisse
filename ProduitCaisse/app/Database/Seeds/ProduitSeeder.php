@@ -18,6 +18,21 @@ class ProduitSeeder extends Seeder
                 'designation' => 'Huile',
                 'quantite_restant' => 50,
                 'prix_unitaire' => 12000
+            ],
+            [
+                'designation' => 'Cafe',
+                'quantite_restant' => 25,
+                'prix_unitaire' => 1200
+            ],
+            [
+                'designation' => 'Savon',
+                'quantite_restant' => 55,
+                'prix_unitaire' => 1000
+            ],
+            [
+                'designation' => 'Papier',
+                'quantite_restant' => 25,
+                'prix_unitaire' => 200
             ]
         ];
 
