@@ -24,16 +24,23 @@ $Produits = $listeProduits ?? [];
         <div class="row justify-content-center">
             <div class="col-md-8">
 
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
+                <?php endif; ?>
+                <?php if (session()->getFlashdata('error')): ?>
+                    <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+                <?php endif; ?>
+
                 <div class="card shadow-sm p-4 mb-4">
                     <h4 class="mb-3">Saisie des achats</h4>
 
-                    <form action="<?= base_url('achat/ajouter') ?>" method="POST" class="row g-3 align-items-end">
+                    <form action="achat/ajouter" method="POST" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="produit" class="form-label fw-bold">Produit</label>
                             <select class="form-select" id="produit" name="id_produit" required>
                                 <option value="" selected disabled>Choisir un produit...</option>
                                 <?php foreach ($Produits as $produit): ?>
-                                    <option value="<?= $produit['id'] ?>"><?= $produit['designation'] ?> (<?= $produit['prix_unitaire'] ?> MGA)</option>
+                                    <option value="<?= $produit['id'] ?>"><?= esc($produit['designation']) ?> (<?= $produit['prix_unitaire'] ?> MGA)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -52,8 +59,8 @@ $Produits = $listeProduits ?? [];
                 <div class="card shadow-sm p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="m-0">Produits du Client</h4>
-                        <a href="<?= base_url('achat/cloturer') ?>" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)">
-                            <<< Clôturer achat>>>
+                        <a href="achat/cloturer" class="btn btn-danger btn-sm" onclick="cloturerAchat(event)">
+                            <<< Clôturer achat >>>
                         </a>
                     </div>
 
@@ -74,11 +81,11 @@ $Produits = $listeProduits ?? [];
                                             <td><?= esc($ligne['designation']) ?></td>
                                             <td class="text-end"><?= number_format($ligne['prix_unitaire'], 0, ',', ' ') ?></td>
                                             <td class="text-center"><?= $ligne['quantite'] ?></td>
-                                            <td class="text-end fw-bold"><?= $ligne['somme_produit'] ?></td>
+                                            <td class="text-end fw-bold"><?= number_format($ligne['somme_produit'], 0, ',', ' ') ?> MGA</td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <tr>
+                                    <tr class="ligne-vide">
                                         <td colspan="4" class="text-center text-muted">Le panier est vide pour ce client.</td>
                                     </tr>
                                 <?php endif; ?>
@@ -86,7 +93,7 @@ $Produits = $listeProduits ?? [];
                             <tfoot>
                                 <tr class="table-dark">
                                     <td colspan="3" class="text-end fw-bold">Total</td>
-                                    <td class="text-end fw-bold fs-5">0 MGA</td>
+                                    <td class="text-end fw-bold fs-5" id="total-general">0 MGA</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -102,30 +109,29 @@ $Produits = $listeProduits ?? [];
 </html>
 
 <script>
-    // Se déclenche automatiquement au chargement du document
     document.addEventListener("DOMContentLoaded", function() {
         updateTotal();
     });
 
     function updateTotal() {
         let total = 0;
+        // On cible uniquement les lignes de données, pas la ligne "Panier vide"
         document.querySelectorAll('tbody tr').forEach(row => {
-            if (row.cells.length >= 4) {
-                // Extraction propre des chiffres uniquement
+            if (!row.classList.contains('ligne-vide') && row.cells.length >= 4) {
                 const text = row.cells[3].textContent.replace(/[^0-9]/g, "");
                 const montant = parseFloat(text) || 0;
                 total += montant;
             }
         });
-        document.querySelector('tfoot tr td:last-child').textContent = total.toLocaleString() + ' MGA';
+        document.getElementById('total-general').textContent = total.toLocaleString('fr-FR') + ' MGA';
     }
 
     function validationAchat() {
+        const produitSelect = document.getElementById('produit').value;
         const quantiteInput = document.getElementById('quantite').value;
         const quantite = parseInt(quantiteInput);
-        const produitSelect = document.getElementById('produit').value;
 
-        if (!produitSelect) {
+        if (produitSelect === "" || produitSelect === null) {
             alert('Veuillez sélectionner un produit.');
             return false;
         }
@@ -136,19 +142,15 @@ $Produits = $listeProduits ?? [];
         return true;
     }
 
-    function confirmerCloture() {
-        return confirm('Êtes-vous sûr de vouloir clôturer cet achat ?');
-    }
-
     function envoyerFormulaire(event) {
         if (!validationAchat()) {
-            event.preventDefault(); // Bloque la soumission du formulaire si invalide
+            event.preventDefault(); // Bloque uniquement si invalide
         }
     }
 
     function cloturerAchat(event) {
-        if (!confirmerCloture()) {
-            event.preventDefault(); // Bloque la redirection vers l'URL si "Annuler"
+        if (!confirm('Êtes-vous sûr de vouloir clôturer cet achat ?')) {
+            event.preventDefault();
         }
     }
 </script>

@@ -10,6 +10,7 @@ class Achat extends Model
 {
     protected $table = 'achat';
     protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
     protected $allowedFields = ['id_caisse', 'somme_total', 'id_client'];
 
     public function getAllAchats()
