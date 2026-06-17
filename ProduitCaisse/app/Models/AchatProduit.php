@@ -8,6 +8,7 @@ class AchatProduit extends Model
 {
     protected $table = 'achat_produit';
     protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
     protected $allowedFields = ['id_achat', 'id_produit', 'quantite', 'somme_produit'];
 
     public function getAllAchatProduits()
