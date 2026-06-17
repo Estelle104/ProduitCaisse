@@ -1,5 +1,8 @@
-<?php $caisse = $caisses ?? []; ?>
+<?php 
+    $caisse = $caisses ?? [];
+    $client_id = session()->get('client_id') ?? null;
 
+?>
 
 
 <!DOCTYPE html>
@@ -16,7 +19,7 @@
         <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
             <h3 class="card-title text-center mb-4">Caisse d'un supermarché</h3>
             
-            <form action="<?= base_url('caisse/choixCaisse') ?>" method="POST">
+            <form action="<?= base_url('client/caisse/choixCaisse') ?>" method="POST">
                 
                 <div class="mb-3">
                     <label for="caisse" class="form-label fw-bold">Choisir Caisse</label>

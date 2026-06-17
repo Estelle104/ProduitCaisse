@@ -13,7 +13,7 @@
             
             <div class="text-center mb-4">
                 <h2 class="fw-bold text-primary">Connexion</h2>
-                <p class="text-muted">Gestion de Caisse Supermarché</p>
+                <p class="text-muted">Gestion de Caisse </p>
             </div>
 
             <?php if (session()->getFlashdata('error')): ?>
@@ -22,16 +22,16 @@
                 </div>
             <?php endif; ?>
             
-            <form action="<?= base_url('auth/connecter') ?>" method="POST">
+            <form action="<?= base_url('login/check') ?>" method="POST">
                 
                 <div class="mb-3">
                     <label for="email" class="form-label fw-bold">Adresse Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="exemple@mail.com" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="marie@gmail.com" value="marie@gmail.com" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="mdp" class="form-label fw-bold">Mot de passe</label>
-                    <input type="password" class="form-control" id="mdp" name="mdp" placeholder="••••••••" required>
+                    <input type="password" class="form-control" id="mdp" name="mdp" placeholder="••••••••" value="1234" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg w-100">Se connecter</button>
