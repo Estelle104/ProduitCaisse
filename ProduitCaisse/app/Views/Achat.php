@@ -15,7 +15,7 @@ $Produits = $listeProduits ?? [];
 
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container-fluid d-flex justify-content-between">
-            <span class="navbar-brand mb-0 h1">🛒 Supermarché SI-IHM</span>
+            <span class="navbar-brand mb-0 h1"> Supermarché SI-IHM</span>
             <span class="badge bg-success fs-5">Caisse active : N° <?= session()->get('id_caisse') ?? 'Non définie' ?></span>
         </div>
     </nav>

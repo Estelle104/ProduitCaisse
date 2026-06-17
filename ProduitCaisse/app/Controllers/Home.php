@@ -11,7 +11,7 @@ class Home extends BaseController
 {
     public function index()
     {
-        return redirect()->to('/caisse');
+        return redirect()->to('/login');
     }
 
     public function login(): string
